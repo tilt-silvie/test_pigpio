@@ -8,18 +8,18 @@ pi = pigpio.pi()
 if not pi.connected:
     exit(0)
 
+# for LIS3DH acceleration sensor
+ADDRESS = 0x19
+REGISTER = 0x0f
 
-# spi = pi.spi_open(0, 1000000, 0) # main SPI, CE0
-# spi = pi.spi_open(1, 1000000, 0) # main SPI, CE1
-spi = pi.spi_open(0, 1000000, 256) # auxiliary SPI, CE0
-
+i2c = pi.i2c_open(1, ADDRESS)
 
 for i in range(100):
-    pi.spi_write(spi, [1, 2, 3, 4, 5])
     print("printed. no." + str(i))
+    data = pi.i2c_read_byte_data(i2c, REGISTER)
+    print("recv:" + str(data))
     time.sleep(1)
 
-
-pi.spi_close(spi)
+pi.i2c_close(spi)
 
 print("finished.")
